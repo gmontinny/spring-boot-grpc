@@ -1,5 +1,5 @@
 # Multi-stage build para otimizar tamanho da imagem
-FROM maven:3.9-eclipse-temurin-17 AS build
+FROM maven:3.9-eclipse-temurin-21 AS build
 
 # Definir diretório de trabalho
 WORKDIR /app
@@ -12,7 +12,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Imagem final otimizada
-FROM eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:21-jre-alpine
 
 # Criar usuário não-root para segurança
 RUN addgroup -g 1001 -S appgroup && \
