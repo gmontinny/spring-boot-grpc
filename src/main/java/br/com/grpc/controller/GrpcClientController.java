@@ -1,9 +1,7 @@
 package br.com.grpc.controller;
 
 import br.com.grpc.client.UserGrpcClient;
-import br.com.grpc.user.proto.ListUsersResponse;
-import br.com.grpc.user.proto.UserResponse;
-import br.com.grpc.user.proto.UserStatus;
+import br.com.grpc.user.proto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -83,6 +81,45 @@ public class GrpcClientController {
             result.put("totalCount", response.getTotalCount());
             result.put("page", response.getPage());
             result.put("size", response.getSize());
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.status(500)
+                .body(Map.of("error", "gRPC call failed: " + e.getMessage()));
+        }
+    }
+
+    @PutMapping("/users/{id}")
+    public ResponseEntity<Map<String, Object>> updateUser(@PathVariable long id,
+                                                        @RequestParam String name,
+                                                        @RequestParam String email,
+                                                        @RequestParam int age,
+                                                        @RequestParam UserStatus status) {
+        try {
+            UserResponse response = grpcClient.updateUser(id, name, email, age, status);
+            Map<String, Object> result = Map.of(
+                "id", response.getId(),
+                "name", response.getName(),
+                "email", response.getEmail(),
+                "age", response.getAge(),
+                "status", response.getStatus().name(),
+                "createdAt", response.getCreatedAt(),
+                "updatedAt", response.getUpdatedAt()
+            );
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.status(500)
+                .body(Map.of("error", "gRPC call failed: " + e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<Map<String, Object>> deleteUser(@PathVariable long id) {
+        try {
+            DeleteUserResponse response = grpcClient.deleteUser(id);
+            Map<String, Object> result = Map.of(
+                "success", response.getSuccess(),
+                "message", response.getMessage()
+            );
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             return ResponseEntity.status(500)

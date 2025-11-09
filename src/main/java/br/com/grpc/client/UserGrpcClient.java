@@ -49,6 +49,24 @@ public class UserGrpcClient {
         return blockingStub.listUsers(request);
     }
 
+    public UserResponse updateUser(long id, String name, String email, int age, UserStatus status) {
+        UpdateUserRequest request = UpdateUserRequest.newBuilder()
+                .setId(id)
+                .setName(name)
+                .setEmail(email)
+                .setAge(age)
+                .setStatus(status)
+                .build();
+        return blockingStub.updateUser(request);
+    }
+
+    public DeleteUserResponse deleteUser(long id) {
+        DeleteUserRequest request = DeleteUserRequest.newBuilder()
+                .setId(id)
+                .build();
+        return blockingStub.deleteUser(request);
+    }
+
     public void streamUsersByStatus(UserStatus status) {
         GetUsersByStatusRequest request = GetUsersByStatusRequest.newBuilder()
                 .setStatus(status)

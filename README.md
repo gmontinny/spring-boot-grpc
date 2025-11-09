@@ -63,6 +63,10 @@ src/main/resources/
 - ✅ Listar usuários (paginação)
 - ✅ Buscar por status (streaming gRPC)
 
+### Dual Interface
+- **REST Direto**: `/api/users/*` - Acesso direto aos serviços
+- **gRPC via REST**: `/api/grpc-client/*` - Demonstra cliente gRPC interno
+
 ### Recursos Avançados
 - 🔒 Validação de dados
 - 📝 Logging estruturado
@@ -133,6 +137,12 @@ curl http://localhost:8080/api/grpc-client/users/1
 # Listar via cliente gRPC interno
 curl http://localhost:8080/api/grpc-client/users
 
+# Atualizar via cliente gRPC interno
+curl -X PUT "http://localhost:8080/api/grpc-client/users/1?name=Maria Silva&email=maria.silva@email.com&age=26&status=ACTIVE"
+
+# Deletar via cliente gRPC interno
+curl -X DELETE http://localhost:8080/api/grpc-client/users/1
+
 # Stream por status (logs no console)
 curl http://localhost:8080/api/grpc-client/users/stream/ACTIVE
 ```
@@ -147,6 +157,14 @@ curl http://localhost:8080/api/grpc-client/users/stream/ACTIVE
   "status": "ACTIVE",
   "createdAt": "2025-11-09T09:47:19.0319591",
   "updatedAt": "2025-11-09T09:47:19.0319591"
+}
+```
+
+**Resposta de Deleção:**
+```json
+{
+  "success": true,
+  "message": "User deleted successfully"
 }
 ```
 
@@ -299,6 +317,8 @@ logging:
 - ✅ Mappers para conversão
 - ✅ Cliente e servidor gRPC
 - ✅ Dual API (gRPC + REST)
+- ✅ CRUD completo em ambas interfaces
+- ✅ Serialização JSON de Protocol Buffers
 - ✅ Documentação completa
 
 ## 🧪 Dados de Teste
@@ -320,6 +340,8 @@ A aplicação inicializa com 3 usuários:
 8. **Testar streaming**: GetUsersByStatus
 9. **Testar validações**: Dados inválidos
 10. **Testar cliente gRPC**: Via endpoints `/api/grpc-client/*`
+11. **Comparar interfaces**: REST direto vs gRPC via REST
+12. **Testar CRUD completo**: Ambas as interfaces
 
 ## ⚠️ Troubleshooting
 
@@ -355,12 +377,14 @@ A aplicação inicializa com 3 usuários:
 
 ✅ **Servidor gRPC** - Porta 9090 com reflection  
 ✅ **API REST** - Porta 8080 para testes  
-✅ **Cliente gRPC Interno** - Demonstração de uso  
+✅ **Cliente gRPC Interno** - CRUD completo via REST  
 ✅ **Streaming gRPC** - GetUsersByStatus  
 ✅ **Paginação** - ListUsers com page/size  
 ✅ **Validações** - Dados de entrada  
 ✅ **Tratamento de Erros** - Global exception handler  
 ✅ **Health Checks** - Monitoramento  
+✅ **Dual Interface** - REST direto + gRPC via REST  
+✅ **Serialização JSON** - Protocol Buffer → JSON  
 ✅ **Docker** - Containerização completa  
 ✅ **Kubernetes** - Deploy com HPA e LoadBalancer  
 ✅ **Logging** - Estruturado com SLF4J  
