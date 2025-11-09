@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: spring-boot-grpc-config
+  namespace: grpc-app
+data:
+  application-k8s.yml: |
+    spring:
+      application:
+        name: grpc-user-service
+      grpc:
+        server:
+          port: 9090
+          reflection-service-enabled: true
+          health-service-enabled: true
+        client:
+          timeout: 30s
+    
+    logging:
+      level:
+        br.com.grpc: INFO
+        io.grpc: WARN
+      pattern:
+        console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    
+    management:
+      endpoints:
+        web:
+          exposure:
+            include: health,info,metrics
+      endpoint:
+        health:
+          show-details: always
+    
+    server:
+      port: 8080

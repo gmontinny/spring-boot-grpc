@@ -226,6 +226,43 @@ docker logs spring-boot-grpc -f
 - **Health check**: Monitoramento automático
 - **Alpine Linux**: Imagem mínima
 
+## ☸️ Kubernetes
+
+### Deploy Rápido
+```bash
+# Build da imagem
+docker build -t spring-boot-grpc:latest .
+
+# Deploy no Kubernetes
+kubectl apply -k k8s/
+
+# Verificar status
+kubectl get pods -n grpc-app
+kubectl get services -n grpc-app
+```
+
+### Recursos Kubernetes
+- **Namespace**: `grpc-app` para isolamento
+- **Deployment**: 2 réplicas com health checks
+- **Service**: LoadBalancer (HTTP:8080, gRPC:9090)
+- **ConfigMap**: Configurações específicas K8s
+- **HPA**: Auto-scaling 2-10 pods baseado em CPU/memória
+
+### Testar no Kubernetes
+```bash
+# Obter IP externo
+kubectl get service spring-boot-grpc-service -n grpc-app
+
+# Testar REST API
+curl http://<EXTERNAL-IP>:8080/api/health
+
+# Testar gRPC
+grpcurl -plaintext <EXTERNAL-IP>:9090 list
+
+# Port-forward para teste local
+kubectl port-forward service/spring-boot-grpc-service 8080:8080 9090:9090 -n grpc-app
+```
+
 ## 🔧 Configurações
 
 ### application.yml
@@ -308,6 +345,7 @@ A aplicação inicializa com 3 usuários:
 - [ ] Autenticação JWT
 - [ ] Métricas Prometheus
 - [x] Docker containerização
+- [x] Kubernetes deployment
 - [ ] Testes automatizados
 - [ ] CI/CD pipeline
 - [ ] Load balancing
@@ -324,5 +362,6 @@ A aplicação inicializa com 3 usuários:
 ✅ **Tratamento de Erros** - Global exception handler  
 ✅ **Health Checks** - Monitoramento  
 ✅ **Docker** - Containerização completa  
+✅ **Kubernetes** - Deploy com HPA e LoadBalancer  
 ✅ **Logging** - Estruturado com SLF4J  
 ✅ **Dados Iniciais** - 3 usuários de exemplo
