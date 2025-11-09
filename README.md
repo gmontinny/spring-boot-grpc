@@ -121,20 +121,33 @@ curl -X PUT http://localhost:8080/api/users/1 \
 curl -X DELETE http://localhost:8080/api/users/1
 ```
 
-### gRPC Client via REST
+### gRPC Client via REST (Testando Cliente Interno)
 
 ```bash
-# Criar via cliente gRPC
+# Criar via cliente gRPC interno
 curl -X POST "http://localhost:8080/api/grpc-client/users?name=Maria&email=maria@email.com&age=25&status=ACTIVE"
 
-# Buscar via cliente gRPC
+# Buscar via cliente gRPC interno
 curl http://localhost:8080/api/grpc-client/users/1
 
-# Listar via cliente gRPC
+# Listar via cliente gRPC interno
 curl http://localhost:8080/api/grpc-client/users
 
-# Stream por status
+# Stream por status (logs no console)
 curl http://localhost:8080/api/grpc-client/users/stream/ACTIVE
+```
+
+**Exemplo de Resposta JSON:**
+```json
+{
+  "id": 1,
+  "name": "João Silva",
+  "email": "joao.silva@email.com",
+  "age": 30,
+  "status": "ACTIVE",
+  "createdAt": "2025-11-09T09:47:19.0319591",
+  "updatedAt": "2025-11-09T09:47:19.0319591"
+}
 ```
 
 ### gRPC Direto (grpcurl)
@@ -189,6 +202,29 @@ enum UserStatus {
   SUSPENDED = 3;
 }
 ```
+
+## 🐳 Docker
+
+### Build e Execução
+```bash
+# Build da imagem
+docker build -t spring-boot-grpc .
+
+# Executar container
+docker run -p 8080:8080 -p 9090:9090 spring-boot-grpc
+
+# Com Docker Compose
+docker-compose up -d
+
+# Logs
+docker logs spring-boot-grpc -f
+```
+
+### Características do Docker
+- **Multi-stage build**: Otimização de tamanho
+- **Usuário não-root**: Segurança
+- **Health check**: Monitoramento automático
+- **Alpine Linux**: Imagem mínima
 
 ## 🔧 Configurações
 
@@ -260,11 +296,33 @@ A aplicação inicializa com 3 usuários:
 - Se erro "server does not support reflection": servidor gRPC configurado com `ProtoReflectionService`
 - Usar `grpcurl -plaintext localhost:9090 list` para verificar
 
+### Cliente gRPC Interno
+- Erro 500 em `/api/grpc-client/*`: Problema de serialização JSON resolvido
+- Respostas convertidas de Protocol Buffer para JSON
+- Tratamento de erros com mensagens descritivas
+- Timeout configurado para evitar travamentos
+
 ## 📈 Próximos Passos
 
 - [ ] Banco de dados (PostgreSQL/MySQL)
 - [ ] Autenticação JWT
 - [ ] Métricas Prometheus
-- [ ] Docker containerização
+- [x] Docker containerização
 - [ ] Testes automatizados
 - [ ] CI/CD pipeline
+- [ ] Load balancing
+- [ ] Service mesh (Istio)
+
+## 🎆 Funcionalidades Implementadas
+
+✅ **Servidor gRPC** - Porta 9090 com reflection  
+✅ **API REST** - Porta 8080 para testes  
+✅ **Cliente gRPC Interno** - Demonstração de uso  
+✅ **Streaming gRPC** - GetUsersByStatus  
+✅ **Paginação** - ListUsers com page/size  
+✅ **Validações** - Dados de entrada  
+✅ **Tratamento de Erros** - Global exception handler  
+✅ **Health Checks** - Monitoramento  
+✅ **Docker** - Containerização completa  
+✅ **Logging** - Estruturado com SLF4J  
+✅ **Dados Iniciais** - 3 usuários de exemplo

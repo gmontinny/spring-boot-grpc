@@ -9,6 +9,11 @@ spring:
     client:
       timeout: 30s
 
+grpc:
+  client:
+    host: ${GRPC_CLIENT_HOST:localhost}
+    port: ${GRPC_CLIENT_PORT:9090}
+
 logging:
   level:
     br.com.grpc: DEBUG
