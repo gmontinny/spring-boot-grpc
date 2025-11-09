@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: grpc-user-service
+  grpc:
+    server:
+      port: 9090
+      reflection-service-enabled: true
+      health-service-enabled: true
+    client:
+      timeout: 30s
+
+logging:
+  level:
+    br.com.grpc: DEBUG
+    io.grpc: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+server:
+  port: 8080
